@@ -16,34 +16,34 @@ app.get('/', (req, res) => {
 });
 
 // Pametovy sklad na zpravy
-const messages = [];
+const zpravy = [];
 
 // API endpoint
-app.get('/api/messages', (req, res) => {
-  res.json(messages);
+app.get('/api/zpravy', (req, res) => {
+  res.json(zpravy);
 });
 
 // API endpoint na ziskani zprav od specifickeho uzivatele
-app.get('/api/messages/user/:username', (req, res) => {
-  const username = req.params.username;
-  const userMessages = messages.filter((message) => message.username === username);
-  res.json(userMessages);
+app.get('/api/zpravy/uzivate/:uzivatelskeJmeno', (req, res) => {
+  const uzivatelskeJmeno = req.params.uzivatelskeJmeno;
+  const zpravyUzivatele = zpravy.filter((zprava) => zprava.uzivatelskeJmeno === uzivatelskeJmeno);
+  res.json(zpravyUzivatele);
 });
 
 // API endpoint na ziskani zprav podle klicoveho slova
-app.get('/api/messages/search/:keyword', (req, res) => {
-  const keyword = req.params.keyword.toLowerCase();
-  const filteredMessages = messages.filter((message) =>
-    message.text.toLowerCase().includes(keyword)
+app.get('/api/zpravy/vyhledavani/:klicoveSlovo', (req, res) => {
+  const klicoveSlovo = req.params.keyword.toLowerCase();
+  const filtrovaneZpravy = zpravy.filter((zprava) =>
+    zprava.text.toLowerCase().includes(klicoveSlovo)
   );
-  res.json(filteredMessages);
+  res.json(filtrovaneZpravy);
 });
 
 // API endpoint na ziskani zprav ve specificke mistnosti
-app.get('/api/messages/room/:room', (req, res) => {
-  const room = req.params.room;
-  const roomMessages = messages.filter((message) => message.room === room);
-  res.json(roomMessages);
+app.get('/api/zpravy/mistnost/:mistnost', (req, res) => {
+  const mistnost = req.params.mistnost;
+  const zpravyVMistnosti = zpravy.filter((zprava) => zprava.mistnost === mistnost);
+  res.json(zpravyVMistnosti);
 });
 
 // WebSocket pripojeni
@@ -56,9 +56,9 @@ io.on('connection', (socket) => {
   });
 
   // Posilani a Prijmani zprav
-  socket.on('chatMessage', (message) => {
-    messages.push(message);
-    io.to(message.room).emit('message', message);
+  socket.on('chatMessage', (zprava) => {
+    zpravy.push(zprava);
+    io.to(zprava.room).emit('message', zprava);
   });
 
   // Pripojeni Uzivatele

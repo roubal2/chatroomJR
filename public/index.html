@@ -12,22 +12,22 @@
   <h1>Chatroom</h1>
   <hr>
 
-  <div class="row" id="username-row">
-    <label for="username">Jméno:</label>
-    <input type="text" id="username" />
+  <div class="rada" id="uzivatelskeJmeno-rada">
+    <label for="uzivatelskeJmeno">Jméno:</label>
+    <input type="text" id="uzivatelskeJmeno" />
   </div>
 
-  <div class="row" id="room-row">
-    <label for="room">Místnost:</label>
-    <input type="text" id="room" />
+  <div class="rada" id="mistnost-rada">
+    <label for="mistnost">Místnost:</label>
+    <input type="text" id="mistnost" />
     <button onclick="joinRoom()">join</button>
   </div>
 
-  <h2 id="username-text"></h2>
+  <h2 id="uzivatelskeJmeno-text"></h2>
 
-  <div class="row" id="message-row" style="display: none;">
-    <label for="message">text: </label>
-    <input type="text" id="message" />
+  <div class="rada" id="zprava-rada" style="display: none;">
+    <label for="zprava">text: </label>
+    <input type="text" id="zprava" />
     <button onclick="sendMessage()">send</button>
   </div>
 
@@ -38,51 +38,51 @@
     const socket = io();
 
     function joinRoom() {
-      const room = document.getElementById('room').value;
-      if (room != "") {
-        let username = document.getElementById('username').value;
-        if (username == '') {
-          username = 'Anon';
+      const mistnost = document.getElementById('mistnost').value;
+      if (mistnost != "") {
+        let uzivatelskeJmeno = document.getElementById('uzivatelskeJmeno').value;
+        if (uzivatelskeJmeno == '') {
+          uzivatelskeJmeno = 'Anon';
         }
-        socket.emit('joinRoom', username);
-        socket.emit('joinRoom', room);
-        const message = {
-          username,
-          room,
-          text: "se připojil/a do místnosti: " + room,
+        socket.emit('joinRoom', uzivatelskeJmeno);
+        socket.emit('joinRoom', mistnost);
+        const zprava = {
+          uzivatelskeJmeno,
+          mistnost,
+          text: "se připojil/a do místnosti: " + mistnost,
         };
-        socket.emit('chatMessage', message);
-        const usernameNameRow = document.getElementById('username-row');
-        const roomRow = document.getElementById('room-row');
-        const messageRow = document.getElementById('message-row');
-        const usernameText = document.getElementById('username-text');
-        usernameNameRow.style.display = 'none';
-        roomRow.style.display = 'none';
-        messageRow.style.display = 'flex';
-        usernameText.innerHTML = `Uživatel: ${username} | Místnost: ${room}`;
+        socket.emit('chatMessage', zprava);
+        const uzivatelskeJmenoRada = document.getElementById('uzivatelskeJmeno-rada');
+        const mistnostRada = document.getElementById('mistnost-rada');
+        const zpravaRada = document.getElementById('zprava-rada');
+        const uzivatelskeJmenoText = document.getElementById('uzivatelskeJmeno-rada');
+        uzivatelskeJmenoRada.style.display = 'none';
+        mistnostRada.style.display = 'none';
+        zpravaRada.style.display = 'flex';
+        uzivatelskeJmenoText.innerHTML = `Uživatel: ${uzivatelskeJmeno} | Místnost: ${mistnost}`;
       }
     }
 
     function sendMessage() {
-      const messageText = document.getElementById('message').value;
-      if (messageText != "") {
-        const username = document.getElementById('username').value;
-        const room = document.getElementById('room').value;
-        const message = {
-          username,
-          room,
-          text: messageText,
+      const zpravaText = document.getElementById('zprava').value;
+      if (zpravaText != "") {
+        const uzivatelskeJmeno = document.getElementById('uzivatelskeJmeno').value;
+        const mistnost = document.getElementById('mistnost').value;
+        const zprava = {
+          uzivatelskeJmeno,
+          mistnost,
+          text: zpravaText,
         };
-        socket.emit('chatMessage', message);
-        document.getElementById('message').value = '';
+        socket.emit('chatMessage', zprava);
+        document.getElementById('zprava').value = '';
       }
     }
 
-    socket.on('message', (message) => {
+    socket.on('zprava', (zprava) => {
       const chatDiv = document.getElementById('chat');
-      const messageDiv = document.createElement('div');
-      messageDiv.innerHTML = `<strong>${message.username}:</strong> ${message.text}`;
-      chatDiv.appendChild(messageDiv);
+      const zpravaDim = document.createElement('div');
+      zpravaDim.innerHTML = `<strong>${zprava.username}:</strong> ${zprava.text}`;
+      chatDiv.appendChild(zpravaDim);
     });
   </script>
 </body>
